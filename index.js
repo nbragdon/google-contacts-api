@@ -62,8 +62,6 @@ GoogleContacts.prototype._get = function (params, cb) {
     }
   };
 
-  console.log(req);
-
   https.request(req, function (res) {
     var data = '';
 
@@ -82,7 +80,6 @@ GoogleContacts.prototype._get = function (params, cb) {
     });
 
     res.on('data', function (chunk) {
-      //console.log(chunk.toString());
       data += chunk;
     });
 
@@ -121,7 +118,6 @@ GoogleContacts.prototype.getContacts = function (cb, contacts) {
 
 GoogleContacts.prototype._saveContactsFromFeed = function (feed) {
   var self = this;
-  //console.log(feed);
   feed.entry.forEach(function (entry) {
     try {
       var name = entry.title['$t'];
@@ -132,8 +128,6 @@ GoogleContacts.prototype._saveContactsFromFeed = function (feed) {
       // property not available...
     }
   });
-  console.log(self.contacts);
-  console.log(self.contacts.length);
 }
 
 GoogleContacts.prototype._buildPath = function (params) {
@@ -187,8 +181,6 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
     }
   };
 
-  //console.log(opts);
-  //console.log(data);
 
   var req = https.request(opts, function (res) {
     var data = '';
@@ -199,7 +191,6 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
       }
       try {
         data = JSON.parse(data);
-        //console.log(data);
         cb(null, data.access_token);
       }
       catch (err) {
@@ -208,7 +199,6 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
     });
 
     res.on('data', function (chunk) {
-      //console.log(chunk.toString());
       data += chunk;
     });
 
