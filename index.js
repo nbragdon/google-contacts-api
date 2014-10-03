@@ -105,14 +105,14 @@ GoogleContacts.prototype.getContacts = function (cb, params, contacts) {
   function receivedContacts(err, data) {
     if (err) return cb(err);
 
-    self._saveContactsFromFeed(data.feed);
+    self._saveContactsFromFeed(data.feed, params);
 
     var next = false;
     data.feed.link.forEach(function (link) {
       if (link.rel === 'next') {
         next = true;
         var path = url.parse(link.href).path;
-        self._get({ path: path }, receivedContacts);
+        self._get(_.extend(params, { path: path }), receivedContacts);
       }
     });
     if (!next) {
@@ -121,19 +121,90 @@ GoogleContacts.prototype.getContacts = function (cb, params, contacts) {
   };
 };
 
-GoogleContacts.prototype._saveContactsFromFeed = function (feed) {
-  var self = this;
-  feed.entry.forEach(function (entry) {
 
-    try {
-      var name = entry.title['$t'];
-      var email = entry['gd$email'][0].address; // only save first email
-      self.contacts.push({ name: name, email: email });
+// grab a property off an entry
+function val(entry, name, attr) {
+  if (!entry[name]) return;
+  if (!Array.isArray(entry[name])) {
+    return entry[name][attr];
+  } else {
+    return entry[name][0][attr];
+  }
+}
+
+
+var processors = {
+  'thin' : function(contacts) { return function(entry) {
+    contacts.push({ 
+      name : val(entry, 'title', '$t'),
+      email : val(entry, 'gd$email', 'address')
+    });
+  } },
+  'full' : function(contacts) { return function(entry) {
+    contacts.push({ 
+      name : val(entry, 'title', '$t'),
+      email : val(entry, 'gd$email', 'address'),
+      phoneNumber: val(entry, 'gd$phoneNumber', '$t')
+    });
+  } },
+  'custom': function(contacts, projection) {
+
+    // pull apart the properties
+    var props = projection.split(',').map(function(prop) { 
+      return prop.replace('property-', ''); 
+    });
+
+    // always include name
+    props.unshift("name");
+
+    // https://developers.google.com/google-apps/contacts/v3/reference#ProjectionsAndExtended
+
+    // a map of property names to places on the contact
+    var prop_names = {
+      "name" : "title",
+      "email" : "gd$email",
+      "phoneNumber": "gd$phoneNumber"
     }
-    catch (e) {
-      // property not available...
+
+    var prop_attr = {
+      "name" : "$t",
+      "email" : "address",
+      "phoneNumber" : "$t"
     }
-  });
+
+    // generating a collection of functions
+    var objector = { };
+    _.each(props, function(prop) {
+      objector[prop] = _.partialRight(val, prop_names[prop], prop_attr[prop]);
+    });
+
+    return function(entry) {
+      var obj = {};
+      _.each(props, function(prop) {
+        obj[prop] = objector[prop](entry);
+      });
+      contacts.push(obj);
+    } 
+  }
+}
+
+
+
+GoogleContacts.prototype._saveContactsFromFeed = function (feed, params) {
+  var self = this;
+
+  // detect which type of projection is being used
+  var processor;
+
+  // dynamic detection of processor type
+  if (processors[params.projection]) {
+    processor = processors[params.projection](self.contacts)
+  } else {
+    processor = processors.custom(self.contacts, params.projection);
+  }
+
+  // run the processor over each entry
+  feed.entry.forEach(processor);
 }
 
 GoogleContacts.prototype._buildPath = function (params) {
