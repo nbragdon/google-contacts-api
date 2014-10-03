@@ -58,7 +58,7 @@ GoogleContacts.prototype._get = function (params, cb) {
     path: this._buildPath(params),
     method: 'GET',
     headers: {
-      'Authorization': 'OAuth ' + this.token 
+      'Authorization': 'Bearer ' + this.token 
     }
   };
 
