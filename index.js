@@ -17,12 +17,10 @@
  * a "Next" link that allows you to request the rest of the response.
  */
 var EventEmitter = require('events').EventEmitter,
-  _ = require('underscore'),
   qs = require('querystring'),
   util = require('util'),
   url = require('url'),
-  https = require('https'),
-  querystring = require('querystring');
+  https = require('https');
 
 var GoogleContacts = function (opts) {
   if (typeof opts === 'string') {
