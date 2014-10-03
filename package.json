@@ -20,5 +20,8 @@
     "api"
   ],
   "author": "Ajnasz <ajnasz@ajnasz.hu>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  }
 }
