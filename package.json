@@ -19,9 +19,6 @@
     "contacts",
     "api"
   ],
-  "dependencies": {
-    "underscore": ""
-  },
   "author": "Ajnasz <ajnasz@ajnasz.hu>",
   "license": "MIT"
 }
