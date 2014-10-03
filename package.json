@@ -1,5 +1,6 @@
 {
   "name": "google-contacts",
+  "private": true,
   "version": "0.0.2",
   "description": "API wrapper for Google Contacts",
   "main": "index.js",
