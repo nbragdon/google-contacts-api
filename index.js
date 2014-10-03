@@ -20,7 +20,8 @@ var EventEmitter = require('events').EventEmitter,
   qs = require('querystring'),
   util = require('util'),
   url = require('url'),
-  https = require('https');
+  https = require('https'),
+  _ = require('lodash');
 
 var GoogleContacts = function (opts) {
   if (typeof opts === 'string') {
@@ -45,6 +46,7 @@ util.inherits(GoogleContacts, EventEmitter);
 GoogleContacts.prototype._get = function (params, cb) {
   var self = this;
 
+
   if (typeof params === 'function') {
     cb = params;
     params = {};
@@ -63,7 +65,10 @@ GoogleContacts.prototype._get = function (params, cb) {
   https.request(req, function (res) {
     var data = '';
 
+
+
     res.on('end', function () {
+
       if (res.statusCode < 200 || res.statusCode >= 300) {
         var error = new Error('Bad client request status: ' + res.statusCode);
         return cb(error);
@@ -91,10 +96,12 @@ GoogleContacts.prototype._get = function (params, cb) {
   }).end();
 };
 
-GoogleContacts.prototype.getContacts = function (cb, contacts) {
+GoogleContacts.prototype.getContacts = function (cb, params, contacts) {
   var self = this;
 
-  this._get({ type: 'contacts' }, receivedContacts);
+  if (Array.isArray(params)) { contacts = params; params = {} }
+
+  this._get(params, receivedContacts);
   function receivedContacts(err, data) {
     if (err) return cb(err);
 
@@ -117,6 +124,7 @@ GoogleContacts.prototype.getContacts = function (cb, contacts) {
 GoogleContacts.prototype._saveContactsFromFeed = function (feed) {
   var self = this;
   feed.entry.forEach(function (entry) {
+
     try {
       var name = entry.title['$t'];
       var email = entry['gd$email'][0].address; // only save first email
@@ -129,14 +137,16 @@ GoogleContacts.prototype._saveContactsFromFeed = function (feed) {
 }
 
 GoogleContacts.prototype._buildPath = function (params) {
-  if (params.path) return params.path;
 
-  params = params || {};
-  params.type = params.type || 'contacts';
-  params.alt = params.alt || 'json';
-  params.projection = params.projection || 'thin';
-  params.email = params.email || 'default';
-  params['max-results'] = params['max-results'] || 2000;
+  params = _.defaults(params, {
+    type: 'contacts',
+    alt : 'json',
+    projection: 'thin',
+    email : 'default',
+    'max-results' : 2000
+  });
+
+  if (params.path) return params.path;
 
   var query = {
     alt: params.alt,
