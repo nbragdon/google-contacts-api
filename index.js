@@ -123,10 +123,17 @@ GoogleContacts.prototype.getContacts = function (cb, params, contacts) {
 
 
 // grab a property off an entry
-function val(entry, name, attr) {
+function val(entry, name, attr, delimiter) {
   if (!entry[name]) return;
   if (!Array.isArray(entry[name])) {
     return entry[name][attr];
+  } else if (delimiter) {
+    return entry[name].map(function(item) {
+      return {
+        label : item.rel ? item.rel.split(delimiter)[1] : "default",
+        field : item[attr]
+      }
+    });
   } else {
     return entry[name][0][attr];
   }
@@ -144,7 +151,7 @@ var processors = {
     contacts.push({ 
       name : val(entry, 'title', '$t'),
       email : val(entry, 'gd$email', 'address'),
-      phoneNumber: val(entry, 'gd$phoneNumber', '$t')
+      phones: val(entry, 'gd$phoneNumber', '$t', '#')
     });
   } },
   'custom': function(contacts, projection) {
