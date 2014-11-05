@@ -2,30 +2,13 @@ Node.js wrapper for the Google Contacts API.
 
 # Install
 
-    npm install google-contacts
+    npm install google-contacts-api
 
 # Usage
 
 ```javascript
-var GoogleContacts = require('googlecontacts').GoogleContacts;
-var c = new GoogleContacts({
-  token: 'oauth2 token...'
+var contacts = new GoogleContacts({ token : req.token });
+contacts.getContacts(function(err, contacts) {
+    // ...
 });
-c.on('error', function (e) {
-  console.log('error', e);
-});
-c.on('contactsReceived', function (contacts) {
-  console.log('contacts: ' + contacts);
-});
-c.on('contactGroupsReceived', function (contactGroups) {
-  console.log('groups: ' + contactGroups);
-});
-c.getContacts('thin', 100);
-c.getContactGroups('thin', 200);
 ```
-
-getContacts and getContactGroups has two optional parameter:
-  projection and limit
-http://code.google.com/apis/contacts/docs/3.0/reference.html#Projections
-limit max how many elements do you wan't to receive
-
