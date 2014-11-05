@@ -9,9 +9,8 @@ function test(token, cb) {
 }
 
 // test proper failure on invalid access
-test(function(err, contacts) {
-    console.log(err);
-    assert(typeof err === "undefined", "err should be undefined");
+test(token, function(err, contacts) {
+    assert(typeof err !== "undefined", "err should not be undefined");
 });
 
 // test proper success on valid access
@@ -23,6 +22,8 @@ if (!token) {
 }
 
 test(token, function(err, contacts) {
-    assert(typeof err === "undefined", "err should be undefined");
-    assert(typeof contacts !== "undefined");
+    console.log(err, contacts)
+    assert(!err, "err should falsey");
+    assert(typeof contacts !== "undefined", "contacts should be defined");
+    assert(!!contacts.length, "more than one contact should be returned");
 });
