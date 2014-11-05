@@ -1,7 +1,6 @@
 {
   "name": "google-contacts-api",
-  "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API wrapper for Google Contacts",
   "main": "index.js",
   "directories": {
@@ -12,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/olalonde/Google-Contacts.git"
+    "url": "git://github.com/weisjohn/google-contacts-api.git"
   },
   "keywords": [
     "google",
