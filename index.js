@@ -65,8 +65,6 @@ GoogleContacts.prototype._get = function (params, cb) {
   https.request(req, function (res) {
     var data = '';
 
-
-
     res.on('end', function () {
 
       if (res.statusCode < 200 || res.statusCode >= 300) {
@@ -90,16 +88,15 @@ GoogleContacts.prototype._get = function (params, cb) {
       cb(err);
     });
 
-    //res.on('close', onFinish);
   }).on('error', function (err) {
     cb(err);
   }).end();
 };
 
-GoogleContacts.prototype.getContacts = function (cb, params, contacts) {
+GoogleContacts.prototype.getContacts = function (params, cb, contacts) {
   var self = this;
 
-  if (Array.isArray(params)) { contacts = params; params = {} }
+  if (typeof params == "function") { cb = params; params = {}; }
 
   this._get(params, receivedContacts);
   function receivedContacts(err, data) {
@@ -251,7 +248,6 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
     client_id: this.consumerKey,
     client_secret: this.consumerSecret,
     grant_type: 'refresh_token'
-
   }
 
   var body = qs.stringify(data);
@@ -266,7 +262,6 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
       'Content-Length': body.length
     }
   };
-
 
   var req = https.request(opts, function (res) {
     var data = '';
@@ -301,4 +296,4 @@ GoogleContacts.prototype.refreshAccessToken = function (refreshToken, cb) {
   req.end();
 }
 
-exports.GoogleContacts = GoogleContacts;
+module.exports = GoogleContacts;
