@@ -1,7 +1,7 @@
 {
   "name": "google-contacts-api",
   "private": true,
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "API wrapper for Google Contacts",
   "main": "index.js",
   "directories": {
@@ -19,7 +19,12 @@
     "contacts",
     "api"
   ],
-  "author": "Ajnasz <ajnasz@ajnasz.hu>",
+  "author": "John Weis <weis.john@gmail.com>",
+  "contributors": [
+    "John Weis <weis.john@gmail.com>",
+    "Olivier Lalonde <olalonde@gmail.com>",
+    "Ajnasz <ajnasz@ajnasz.hu>",
+  ],
   "license": "MIT",
   "dependencies": {
     "lodash": "^2.4.1"
