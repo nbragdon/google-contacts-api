@@ -1,11 +1,8 @@
 {
   "name": "google-contacts-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "API wrapper for Google Contacts",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "test": "node test.js"
   },

@@ -22,7 +22,6 @@ if (!token) {
 }
 
 test(token, function(err, contacts) {
-    console.log(err, contacts)
     assert(!err, "err should falsey");
     assert(typeof contacts !== "undefined", "contacts should be defined");
     assert(!!contacts.length, "more than one contact should be returned");
