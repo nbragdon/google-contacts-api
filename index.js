@@ -36,6 +36,7 @@ var GoogleContacts = function (opts) {
   this.consumerSecret = opts.consumerSecret ? opts.consumerSecret : null;
   this.token = opts.token ? opts.token : null;
   this.refreshToken = opts.refreshToken ? opts.refreshToken : null;
+  this.projection = opts.projection ? opts.projection : 'full';
 };
 
 GoogleContacts.prototype = {};
@@ -216,7 +217,7 @@ GoogleContacts.prototype._buildPath = function (params) {
   params = _.defaults(params, {
     type: 'contacts',
     alt : 'json',
-    projection: 'thin',
+    projection: this.projection,
     email : 'default',
     'max-results' : 2000
   });
