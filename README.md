@@ -2,7 +2,7 @@ Node.js wrapper for the Google Contacts API.
 
 # install
 
-    npm install google-contacts-api
+    npm install https://github.com/nbragdon/google-contacts-api.git
 
 # usage
 
