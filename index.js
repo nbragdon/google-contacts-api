@@ -97,7 +97,12 @@ GoogleContacts.prototype._get = function (params, cb) {
 GoogleContacts.prototype.getContacts = function (params, cb, contacts) {
   var self = this;
 
-  if (typeof params == "function") { cb = params; params = {}; }
+  if (typeof params == "function") {
+    cb = params;
+    params = {};
+  }
+
+  params.token = self.token;
 
   this._get(params, receivedContacts);
   function receivedContacts(err, data) {
@@ -139,14 +144,13 @@ function val(entry, name, attr, delimiter) {
 
 
 var processors = {
-  'thin' : function(contacts) { return function(entry) {
+  'thin' : function(contacts, googleContacts) { return function(entry) {
     contacts.push({ 
       name : val(entry, 'title', '$t'),
       email : val(entry, 'gd$email', 'address')
     });
   } },
-  'full' : function(contacts) { return function(entry) {
-    console.log('ENTRY', entry);
+  'full' : function(contacts, googleContacts) { return function(entry) {
 	var imageLink = _.result(_.find(entry.link, function(item) {
 	  if(item.rel && item.rel.indexOf('rel#photo')) {
 		return true;
@@ -161,15 +165,13 @@ var processors = {
 	};
 
     if (imageLink) {
-		console.log('GOOGLE CONTACTS', GoogleContacts);
-		console.log('THIS', this);
-	  imageLink += '?access_token=' + GoogleContacts.token;
+	  imageLink += '?access_token=' + googleContacts.token;
 	  contactData.image = imageLink;
 	}
 
     contacts.push(contactData);
   } },
-  'custom': function(contacts, projection) {
+  'custom': function(contacts, projection, googleContacts) {
 
     // pull apart the properties
     var props = projection.split(',').map(function(prop) { 
@@ -220,9 +222,9 @@ GoogleContacts.prototype._saveContactsFromFeed = function (feed, params) {
 
   // dynamic detection of processor type
   if (processors[params.projection]) {
-    processor = processors[params.projection](self.contacts)
+    processor = processors[params.projection](self.contacts, self)
   } else {
-    processor = processors.custom(self.contacts, params.projection);
+    processor = processors.custom(self.contacts, params.projection, self);
   }
 
   // run the processor over each entry
