@@ -161,6 +161,8 @@ var processors = {
 	};
 
     if (imageLink) {
+		console.log('GOOGLE CONTACTS', GoogleContacts);
+		console.log('THIS', this);
 	  imageLink += '?access_token=' + GoogleContacts.token;
 	  contactData.image = imageLink;
 	}
