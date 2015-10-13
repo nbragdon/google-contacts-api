@@ -146,11 +146,25 @@ var processors = {
     });
   } },
   'full' : function(contacts) { return function(entry) {
-    contacts.push({ 
-      name : val(entry, 'title', '$t'),
-      email : val(entry, 'gd$email', 'address'),
-      phones: val(entry, 'gd$phoneNumber', '$t', '#')
-    });
+	var imageLink = _.result(_.find(link, function(item) {
+	  if(item.rel && item.rel.indexOf('rel#photo')) {
+		return true;
+	  }
+	  return false;
+	}), 'href');
+
+    var contactData = {
+	  name : val(entry, 'title', '$t'),
+	  email : val(entry, 'gd$email', 'address'),
+	  phones: val(entry, 'gd$phoneNumber', '$t', '#')
+	};
+
+    if (imageLink) {
+	  imageLink += '?access_token=' + GoogleContacts.token;
+	  contactData.image = imageLink;
+	}
+
+    contacts.push(contactData);
   } },
   'custom': function(contacts, projection) {
 
