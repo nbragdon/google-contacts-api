@@ -146,7 +146,8 @@ var processors = {
     });
   } },
   'full' : function(contacts) { return function(entry) {
-	var imageLink = _.result(_.find(link, function(item) {
+    console.log('ENTRY', entry);
+	var imageLink = _.result(_.find(entry.link, function(item) {
 	  if(item.rel && item.rel.indexOf('rel#photo')) {
 		return true;
 	  }
