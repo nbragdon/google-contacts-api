@@ -173,7 +173,7 @@ var processors = {
 	}
 
     if (imageLink) {
-	  imageLink += '?access_token=' + googleContacts.token;
+	  imageLink += '&access_token=' + googleContacts.token;
 	  contactData.image = imageLink;
 	}
 
