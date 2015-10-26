@@ -253,6 +253,7 @@ GoogleContacts.prototype._buildPath = function (params) {
 
   var query = {
     alt: params.alt,
+    v: '3.0',
     'max-results': params['max-results']
   };
 
@@ -261,7 +262,6 @@ GoogleContacts.prototype._buildPath = function (params) {
   path += params.email + '/'; 
   path += params.projection;
   path += '?' + qs.stringify(query);
-  path += '&v=3.0';
 
   return path;
 };
