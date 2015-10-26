@@ -161,8 +161,16 @@ var processors = {
     var contactData = {
 	  name : val(entry, 'title', '$t'),
 	  email : val(entry, 'gd$email', 'address'),
-	  phones: val(entry, 'gd$phoneNumber', '$t', '#')
+	  phones: val(entry, 'gd$phoneNumber', '$t', '#'),
+	  address: val(entry, 'gd$structuredPostalAddress', 'gd$formattedAddress'),
+	  birthday: val(entry, 'gContact$birthday', 'when'),
+	  url: val(entry, 'gContact$website', 'href'),
+	  note: val(entry, 'content', '$t')
 	};
+
+    if (contactData.address) {
+	  contactData.address = contactData.address['$t'];
+	}
 
     if (imageLink) {
 	  imageLink += '?access_token=' + googleContacts.token;
@@ -253,6 +261,7 @@ GoogleContacts.prototype._buildPath = function (params) {
   path += params.email + '/'; 
   path += params.projection;
   path += '?' + qs.stringify(query);
+  path += '&v=3.0';
 
   return path;
 };
