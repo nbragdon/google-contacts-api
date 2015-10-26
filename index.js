@@ -246,14 +246,15 @@ GoogleContacts.prototype._buildPath = function (params) {
     alt : 'json',
     projection: this.projection,
     email : 'default',
-    'max-results' : 2000
+    'max-results' : 2000,
+    v: '3.0'
   });
 
   if (params.path) return params.path;
 
   var query = {
     alt: params.alt,
-    v: '3.0',
+    v: params.v,
     'max-results': params['max-results']
   };
 
